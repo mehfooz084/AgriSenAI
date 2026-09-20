@@ -1,0 +1,42 @@
+# =========================
+# Environment / API Keys
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+
+
+# Dataset
+Dataset/
+
+# =========================
+# Jupyter Notebook
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# Local Cache / Database
+# =========================
+.cache.sqlite
+
+# =========================
+# OS / Editor Files
+# =========================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# =========================
+# Temporary Files
+# =========================
+*.log
+*.tmp
+*.temp

@@ -1,0 +1,12 @@
+flask
+flask-cors
+tensorflow
+pillow
+numpy
+pandas
+requests
+openmeteo-requests
+requests-cache
+retry-requests
+python-dotenv
+google-genai

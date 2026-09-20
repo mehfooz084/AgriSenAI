@@ -1,0 +1,58 @@
+:root {
+  --agri-ink: #143322;
+  --agri-muted: #5b6b61;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  color: var(--agri-ink);
+  background: #f6f7f4;
+}
+
+h1, h2, h3, .font-display {
+  font-family: "Fraunces", serif;
+}
+
+.hero-grid {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(20, 51, 34, 0.06) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+.nav-link.active {
+  color: #166534;
+  background: #ecf8ef;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-wrap table {
+  min-width: 640px;
+}
+
+.dropzone.is-active {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.progress-fill {
+  transition: width 500ms ease;
+}
+
+.chart-box {
+  position: relative;
+  height: 280px;
+}
+
+@media (max-width: 640px) {
+  .chart-box {
+    height: 220px;
+  }
+}

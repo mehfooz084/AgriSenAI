@@ -1,0 +1,499 @@
+{
+  "Apple - Apple Scab": {
+    "plant": "Apple",
+    "disease": "Apple Scab",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Mancozeb 75% WP",
+        "dosage": "2 g/L water",
+        "source": "State Horticulture / ICAR Advisory",
+        "note": "Follow product label instructions."
+      },
+      {
+        "medicine": "Copper Oxychloride 50% WP",
+        "dosage": "3 g/L water",
+        "source": "State Horticulture Advisory",
+        "note": "Spray during early infection."
+      }
+    ]
+  },
+  "Apple - Black Rot": {
+    "plant": "Apple",
+    "disease": "Black Rot",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Captan 50% WP",
+        "dosage": "2 g/L water",
+        "source": "Horticulture Advisory",
+        "note": "Remove infected fruits before spraying."
+      },
+      {
+        "medicine": "Mancozeb 75% WP",
+        "dosage": "2 g/L water",
+        "source": "State Agriculture Advisory",
+        "note": "Repeat spray if required."
+      }
+    ]
+  },
+  "Apple - Cedar Apple Rust": {
+    "plant": "Apple",
+    "disease": "Cedar Apple Rust",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Myclobutanil",
+        "dosage": "1 ml/L water",
+        "source": "Fruit Crop Disease Management Guide",
+        "note": "Apply before severe infection."
+      },
+      {
+        "medicine": "Mancozeb 75% WP",
+        "dosage": "2 g/L water",
+        "source": "State Horticulture Advisory",
+        "note": "Follow product label."
+      }
+    ]
+  },
+  "Apple - Healthy": {
+    "plant": "Apple",
+    "disease": "Healthy",
+    "status": "Healthy",
+    "treatment": [
+      {
+        "medicine": "No treatment required",
+        "dosage": "-",
+        "source": "-",
+        "note": "Maintain proper nutrition and irrigation."
+      }
+    ]
+  },
+  "Bell Pepper - Bacterial Spot": {
+    "plant": "Bell Pepper",
+    "disease": "Bacterial Spot",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Copper Oxychloride 50% WP",
+        "dosage": "3 g/L water",
+        "source": "ICAR Vegetable Crop Advisory",
+        "note": "Spray at first symptoms."
+      },
+      {
+        "medicine": "Streptocycline",
+        "dosage": "0.5 g/10 L water",
+        "source": "State Agriculture University",
+        "note": "Use only where permitted."
+      }
+    ]
+  },
+  "Bell Pepper - Healthy": {
+    "plant": "Bell Pepper",
+    "disease": "Healthy",
+    "status": "Healthy",
+    "treatment": [
+      {
+        "medicine": "No treatment required",
+        "dosage": "-",
+        "source": "-",
+        "note": "Maintain balanced fertilizer schedule."
+      }
+    ]
+  },
+  "Cherry - Powdery Mildew": {
+    "plant": "Cherry",
+    "disease": "Powdery Mildew",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Wettable Sulphur",
+        "dosage": "2 g/L water",
+        "source": "Fruit Disease Management Guide",
+        "note": "Avoid spraying during high temperatures."
+      },
+      {
+        "medicine": "Hexaconazole 5% EC",
+        "dosage": "1 ml/L water",
+        "source": "State Horticulture Advisory",
+        "note": "Repeat after 10–14 days if necessary."
+      }
+    ]
+  },
+  "Cherry - Healthy": {
+    "plant": "Cherry",
+    "disease": "Healthy",
+    "status": "Healthy",
+    "treatment": [
+      {
+        "medicine": "No treatment required",
+        "dosage": "-",
+        "source": "-",
+        "note": "Monitor crop regularly."
+      }
+    ]
+  },
+  "Corn (Maize) - Cercospora Leaf Spot": {
+    "plant": "Corn (Maize)",
+    "disease": "Cercospora Leaf Spot",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Azoxystrobin 23% SC",
+        "dosage": "1 ml/L water",
+        "source": "ICAR Maize Disease Management",
+        "note": "Spray at first appearance of symptoms."
+      },
+      {
+        "medicine": "Propiconazole 25% EC",
+        "dosage": "1 ml/L water",
+        "source": "State Agriculture University Advisory",
+        "note": "Repeat after 10–14 days if disease persists."
+      }
+    ]
+  },
+  "Corn (Maize) - Common Rust": {
+    "plant": "Corn (Maize)",
+    "disease": "Common Rust",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Propiconazole 25% EC",
+        "dosage": "1 ml/L water",
+        "source": "ICAR Agro Advisory",
+        "note": "Spray at early stage of rust infection."
+      },
+      {
+        "medicine": "Mancozeb 75% WP",
+        "dosage": "2 g/L water",
+        "source": "ICAR Agro Advisory",
+        "note": "Follow label instructions."
+      }
+    ]
+  },
+  "Corn (Maize) - Northern Leaf Blight": {
+    "plant": "Corn (Maize)",
+    "disease": "Northern Leaf Blight",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Azoxystrobin + Difenoconazole",
+        "dosage": "1 ml/L water",
+        "source": "ICAR Maize Advisory",
+        "note": "Effective during early infection."
+      },
+      {
+        "medicine": "Mancozeb 75% WP",
+        "dosage": "2 g/L water",
+        "source": "ICAR Agro Advisory",
+        "note": "Preventive spray."
+      }
+    ]
+  },
+  "Corn (Maize) - Healthy": {
+    "plant": "Corn (Maize)",
+    "disease": "Healthy",
+    "status": "Healthy",
+    "treatment": [
+      {
+        "medicine": "No treatment required",
+        "dosage": "-",
+        "source": "-",
+        "note": "Maintain balanced nutrition and field monitoring."
+      }
+    ]
+  },
+  "Grape - Black Rot": {
+    "plant": "Grape",
+    "disease": "Black Rot",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Captan 50% WP",
+        "dosage": "2 g/L water",
+        "source": "ICAR NRC Grapes",
+        "note": "Remove infected berries before spraying."
+      },
+      {
+        "medicine": "Mancozeb 75% WP",
+        "dosage": "2 g/L water",
+        "source": "ICAR NRC Grapes",
+        "note": "Apply during early disease development."
+      }
+    ]
+  },
+  "Grape - Esca (Black Measles)": {
+    "plant": "Grape",
+    "disease": "Esca (Black Measles)",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Carbendazim 50% WP",
+        "dosage": "1 g/L water",
+        "source": "NRC Grapes Disease Advisory",
+        "note": "Prune infected vines before treatment."
+      },
+      {
+        "medicine": "Copper Oxychloride 50% WP",
+        "dosage": "3 g/L water",
+        "source": "NRC Grapes Advisory",
+        "note": "Use only if symptoms persist."
+      }
+    ]
+  },
+  "Grape - Leaf Blight": {
+    "plant": "Grape",
+    "disease": "Leaf Blight",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Chlorothalonil 75% WP",
+        "dosage": "2 g/L water",
+        "source": "ICAR NRC Grapes",
+        "note": "Spray at first visible symptoms."
+      },
+      {
+        "medicine": "Mancozeb 75% WP",
+        "dosage": "2 g/L water",
+        "source": "ICAR NRC Grapes",
+        "note": "Repeat after 10 days if needed."
+      }
+    ]
+  },
+  "Grape - Healthy": {
+    "plant": "Grape",
+    "disease": "Healthy",
+    "status": "Healthy",
+    "treatment": [
+      {
+        "medicine": "No treatment required",
+        "dosage": "-",
+        "source": "-",
+        "note": "Continue regular vineyard monitoring."
+      }
+    ]
+  },
+  "Peach - Bacterial Spot": {
+    "plant": "Peach",
+    "disease": "Bacterial Spot",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Copper Oxychloride 50% WP",
+        "dosage": "3 g/L water",
+        "source": "State Horticulture Advisory",
+        "note": "Begin spray at first symptoms."
+      },
+      {
+        "medicine": "Streptocycline",
+        "dosage": "0.5 g/10 L water",
+        "source": "Agricultural University Advisory",
+        "note": "Use only where permitted."
+      }
+    ]
+  },
+  "Peach - Healthy": {
+    "plant": "Peach",
+    "disease": "Healthy",
+    "status": "Healthy",
+    "treatment": [
+      {
+        "medicine": "No treatment required",
+        "dosage": "-",
+        "source": "-",
+        "note": "Maintain orchard sanitation and balanced nutrition."
+      }
+    ]
+  },
+  "Potato - Early Blight": {
+    "plant": "Potato",
+    "disease": "Early Blight",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Mancozeb 75% WP",
+        "dosage": "2-2.5 g/L water",
+        "source": "ICAR Agro Advisory",
+        "note": "Apply at first disease appearance."
+      },
+      {
+        "medicine": "Chlorothalonil 75% WP",
+        "dosage": "2 g/L water",
+        "source": "State Agriculture Advisory",
+        "note": "Repeat after 7-10 days if required."
+      }
+    ]
+  },
+  "Potato - Late Blight": {
+    "plant": "Potato",
+    "disease": "Late Blight",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Metalaxyl + Mancozeb",
+        "dosage": "2 g/L water",
+        "source": "ICAR Agro Advisory",
+        "note": "Use at early stage of infection."
+      },
+      {
+        "medicine": "Copper Oxychloride 50% WP",
+        "dosage": "3 g/L water",
+        "source": "State Agriculture Advisory",
+        "note": "Suitable as a protective spray."
+      }
+    ]
+  },
+  "Potato - Healthy": {
+    "plant": "Potato",
+    "disease": "Healthy",
+    "status": "Healthy",
+    "treatment": [
+      {
+        "medicine": "No treatment required",
+        "dosage": "-",
+        "source": "-",
+        "note": "Monitor crop and follow recommended fertilizer schedule."
+      }
+    ]
+  },
+  "Strawberry - Leaf Scorch": {
+    "plant": "Strawberry",
+    "disease": "Leaf Scorch",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Captan 50% WP",
+        "dosage": "2 g/L water",
+        "source": "Horticulture Disease Management Guide",
+        "note": "Remove infected leaves before spraying."
+      },
+      {
+        "medicine": "Copper Oxychloride 50% WP",
+        "dosage": "3 g/L water",
+        "source": "State Horticulture Advisory",
+        "note": "Preventive application is recommended."
+      }
+    ]
+  },
+  "Strawberry - Healthy": {
+    "plant": "Strawberry",
+    "disease": "Healthy",
+    "status": "Healthy",
+    "treatment": [
+      {
+        "medicine": "No treatment required",
+        "dosage": "-",
+        "source": "-",
+        "note": "Maintain field hygiene and regular inspection."
+      }
+    ]
+  },
+  "Tomato - Bacterial Spot": {
+    "plant": "Tomato",
+    "disease": "Bacterial Spot",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Copper Oxychloride 50% WP",
+        "dosage": "3 g/L water",
+        "source": "ICAR Kharif Agro-Advisory",
+        "note": "Spray at first appearance of symptoms."
+      },
+      {
+        "medicine": "Streptocycline",
+        "dosage": "0.5 g/10 L water",
+        "source": "State Agriculture University Advisory",
+        "note": "Use only where permitted."
+      }
+    ]
+  },
+  "Tomato - Early Blight": {
+    "plant": "Tomato",
+    "disease": "Early Blight",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Copper Oxychloride 50% WP",
+        "dosage": "3 g/L water",
+        "source": "ICAR Kharif Agro-Advisory 2025",
+        "note": "Spray when symptoms first appear."
+      },
+      {
+        "medicine": "Carbendazim 12% + Mancozeb 63% WP",
+        "dosage": "2 g/L water",
+        "source": "ICAR Kharif Agro-Advisory 2025",
+        "note": "Repeat after 10–15 days if required."
+      }
+    ]
+  },
+  "Tomato - Late Blight": {
+    "plant": "Tomato",
+    "disease": "Late Blight",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Metalaxyl 4% + Mancozeb 64% WP",
+        "dosage": "1.5 g/L water",
+        "source": "ICAR Kharif Agro-Advisory 2025",
+        "note": "Use immediately after early symptoms."
+      },
+      {
+        "medicine": "Copper Oxychloride 50% WP",
+        "dosage": "3 g/L water",
+        "source": "ICAR Kharif Agro-Advisory 2025",
+        "note": "Protective fungicide spray."
+      }
+    ]
+  },
+  "Tomato - Septoria Leaf Spot": {
+    "plant": "Tomato",
+    "disease": "Septoria Leaf Spot",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Chlorothalonil 75% WP",
+        "dosage": "2 g/L water",
+        "source": "State Agriculture Advisory",
+        "note": "Spray every 10–14 days if necessary."
+      },
+      {
+        "medicine": "Copper Oxychloride 50% WP",
+        "dosage": "3 g/L water",
+        "source": "ICAR Vegetable Disease Management",
+        "note": "Remove infected leaves before spraying."
+      }
+    ]
+  },
+  "Tomato - Yellow Leaf Curl Virus": {
+    "plant": "Tomato",
+    "disease": "Yellow Leaf Curl Virus",
+    "status": "Diseased",
+    "treatment": [
+      {
+        "medicine": "Imidacloprid 17.8% SL",
+        "dosage": "0.3 ml/L water",
+        "source": "ICAR Pest Management Advisory",
+        "note": "Controls whitefly vector; it does not cure the virus."
+      },
+      {
+        "medicine": "Thiamethoxam 25% WG",
+        "dosage": "0.25 g/L water",
+        "source": "State Agriculture University Advisory",
+        "note": "Remove infected plants and control whiteflies."
+      }
+    ]
+  },
+  "Tomato - Healthy": {
+    "plant": "Tomato",
+    "disease": "Healthy",
+    "status": "Healthy",
+    "treatment": [
+      {
+        "medicine": "No treatment required",
+        "dosage": "-",
+        "source": "-",
+        "note": "Maintain balanced nutrition, irrigation and regular crop monitoring."
+      }
+    ]
+  }
+}

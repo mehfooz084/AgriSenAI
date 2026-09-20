@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriSense AI Assistant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,650&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+</head>
+<body data-page="chatbot" class="min-h-screen bg-gradient-to-br from-[#dcfce7] via-[#f6f7f4] to-[#c7d2fe] text-emerald-950 flex flex-col">
+  <!-- Subtle animated background element -->
+  <div class="fixed inset-0 z-[-1] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-200/40 via-transparent to-transparent"></div>
+  <header class="sticky top-0 z-40 border-b border-emerald-100 bg-white/95 backdrop-blur">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+      <a href="index.html" class="text-sm font-semibold tracking-tight text-emerald-900">🌱 AgriSense AI</a>
+      <button id="nav-toggle" class="rounded-lg border border-stone-200 px-3 py-2 text-sm md:hidden" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+      <nav id="nav-menu" class="hidden w-full md:block md:w-auto">
+        <div class="mt-3 flex flex-col gap-1 md:mt-0 md:flex-row md:items-center md:gap-1">
+          <a data-nav="home" href="index.html" class="nav-link rounded-lg px-3 py-2 text-sm text-stone-600 hover:bg-emerald-50">Home</a>
+          <a data-nav="disease" href="disease.html" class="nav-link rounded-lg px-3 py-2 text-sm text-stone-600 hover:bg-emerald-50">Disease Detection</a>
+          <a data-nav="treatment" href="treatment.html" class="nav-link rounded-lg px-3 py-2 text-sm text-stone-600 hover:bg-emerald-50">Treatment</a>
+          <a data-nav="weather" href="weather.html" class="nav-link rounded-lg px-3 py-2 text-sm text-stone-600 hover:bg-emerald-50">Weather</a>
+          <a data-nav="mandi" href="mandi.html" class="nav-link rounded-lg px-3 py-2 text-sm text-stone-600 hover:bg-emerald-50">Mandi Prices</a>
+          <a data-nav="chatbot" href="chatbot.html" class="nav-link rounded-lg px-3 py-2 text-sm text-stone-600 hover:bg-emerald-50 font-semibold bg-emerald-50">AI Assistant</a>
+          <a data-nav="about" href="about.html" class="nav-link rounded-lg px-3 py-2 text-sm text-stone-600 hover:bg-emerald-50">About</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-4 py-6 flex-grow w-full flex flex-col md:flex-row gap-6">
+    
+    <!-- Chat Area -->
+    <div class="flex-grow flex flex-col bg-white/60 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50 overflow-hidden h-[80vh]">
+        <!-- Chat Header -->
+        <div class="bg-emerald-700/90 backdrop-blur-md text-white p-4 flex justify-between items-center border-b border-emerald-600/50">
+            <div>
+                <h2 class="text-xl font-semibold">AgriSense AI Assistant</h2>
+                <p class="text-emerald-100 text-sm">Multilingual Farming Assistant</p>
+            </div>
+            <div class="flex gap-3 items-center">
+                <div class="relative">
+                    <select id="language-select" class="appearance-none bg-[#0f5132] hover:bg-[#0b3d25] transition-colors text-white text-sm font-medium rounded-full pl-4 pr-10 py-2 outline-none cursor-pointer shadow-sm border-none">
+                        <option value="Auto Detect">🌐 Auto Detect</option>
+                        <option value="English">🇬🇧 English</option>
+                        <option value="Hindi">🇮🇳 हिंदी (Hindi)</option>
+                        <option value="Marathi">🇮🇳 मराठी (Marathi)</option>
+                    <option value="Bengali">বাংলা (Bengali)</option>
+                    <option value="Telugu">తెలుగు (Telugu)</option>
+                    <option value="Tamil">தமிழ் (Tamil)</option>
+                    <option value="Gujarati">ગુજરાતી (Gujarati)</option>
+                    <option value="Kannada">ಕನ್ನಡ (Kannada)</option>
+                    <option value="Malayalam">മലയാളം (Malayalam)</option>
+                    <option value="Punjabi">ਪੰਜਾਬੀ (Punjabi)</option>
+                    <option value="Odia">ଓଡ଼ିଆ (Odia)</option>
+                    </select>
+                    <!-- Custom Dropdown Arrow -->
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    </div>
+                </div>
+                <button id="location-btn" class="bg-[#0f5132] hover:bg-[#0b3d25] flex items-center justify-center w-[36px] h-[36px] rounded-xl border-none transition shadow-sm" title="Use My Location">
+                    <span style="font-size: 1.1rem; line-height: 1;">📍</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="flex-grow p-4 overflow-y-auto flex flex-col gap-4">
+            <!-- Welcome Message -->
+            <div class="chat-bubble bot-bubble">
+                <p>Hello! I am your AgriSense AI Farming Assistant. How can I help you today with your crops, weather, or market prices?</p>
+            </div>
+        </div>
+        
+        <!-- Suggested Questions -->
+        <div class="px-4 py-3 flex overflow-x-auto hide-scrollbar gap-2 text-xs border-t border-white/40 bg-white/40 backdrop-blur-md">
+            <button class="suggest-btn flex-shrink-0 rounded-full border border-emerald-200/50 bg-white/70 shadow-sm px-4 py-1.5 text-emerald-800 hover:bg-emerald-50 hover:border-emerald-300 transition backdrop-blur-sm">🌦 What should I plant today?</button>
+            <button class="suggest-btn flex-shrink-0 rounded-full border border-emerald-200/50 bg-white/70 shadow-sm px-4 py-1.5 text-emerald-800 hover:bg-emerald-50 hover:border-emerald-300 transition backdrop-blur-sm">🌧 Will it rain?</button>
+            <button class="suggest-btn flex-shrink-0 rounded-full border border-emerald-200/50 bg-white/70 shadow-sm px-4 py-1.5 text-emerald-800 hover:bg-emerald-50 hover:border-emerald-300 transition backdrop-blur-sm">💧 Should I irrigate?</button>
+            <button class="suggest-btn flex-shrink-0 rounded-full border border-emerald-200/50 bg-white/70 shadow-sm px-4 py-1.5 text-emerald-800 hover:bg-emerald-50 hover:border-emerald-300 transition backdrop-blur-sm">🪱 Improve soil health</button>
+            <button class="suggest-btn flex-shrink-0 rounded-full border border-emerald-200/50 bg-white/70 shadow-sm px-4 py-1.5 text-emerald-800 hover:bg-emerald-50 hover:border-emerald-300 transition backdrop-blur-sm">🌿 Organic farming tips</button>
+            <button class="suggest-btn flex-shrink-0 rounded-full border border-emerald-200/50 bg-white/70 shadow-sm px-4 py-1.5 text-emerald-800 hover:bg-emerald-50 hover:border-emerald-300 transition backdrop-blur-sm">🌱 Crop care tips</button>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="p-4 bg-white/60 backdrop-blur-md border-t border-white/50 flex gap-3 items-center relative">
+            <button id="upload-img-btn" class="p-2.5 text-emerald-700 bg-white/80 shadow-sm hover:bg-emerald-50 hover:scale-105 transition-all rounded-full border border-emerald-100" title="Upload Leaf Image">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+            </button>
+            <input type="file" id="image-upload" accept="image/*" class="hidden">
+            
+            <div class="relative flex-grow flex items-center">
+                <input type="text" id="chat-input" class="w-full rounded-2xl border border-white/60 bg-white/80 shadow-inner pl-5 pr-20 py-3 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-400/50 transition-all placeholder:text-stone-400" placeholder="Type your message or use voice...">
+                
+                <div class="absolute right-2 flex gap-1">
+                    <button id="voice-btn" class="p-2 text-stone-400 hover:text-red-500 transition-colors rounded-full hover:bg-stone-100" title="Voice Input">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+                    </button>
+                    <button id="speaker-btn" class="p-2 text-stone-400 hover:text-emerald-600 transition-colors rounded-full hover:bg-stone-100" title="Text-to-Speech (Off)" data-active="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="speaker-off"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="speaker-on hidden"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <button id="send-btn" class="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-2xl p-3 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Context Panel -->
+    <div class="w-full md:w-1/3 flex flex-col gap-4">
+        <div class="bg-white/60 backdrop-blur-xl p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/50">
+            <h3 class="font-semibold text-emerald-900 mb-4 border-b border-emerald-100/50 pb-3 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                Context Information
+            </h3>
+            
+            <div class="flex flex-col gap-4 text-sm">
+                <div class="flex justify-between items-center bg-white/50 p-3 rounded-xl border border-white/40 shadow-sm">
+                    <span class="text-stone-500 font-medium">Location</span>
+                    <span id="ctx-location" class="font-medium text-emerald-800 text-right">Not detected</span>
+                </div>
+                <div class="flex justify-between items-center bg-white/50 p-3 rounded-xl border border-white/40 shadow-sm">
+                    <span class="text-stone-500 font-medium">Language</span>
+                    <span id="ctx-language" class="font-medium text-emerald-800 text-right">Auto Detect</span>
+                </div>
+                <div id="image-context-box" class="hidden mt-1 p-4 bg-emerald-50/80 backdrop-blur-sm rounded-xl border border-emerald-100 shadow-sm">
+                    <span class="text-xs font-semibold text-emerald-900 block mb-1 uppercase tracking-wider">Image Detection Result</span>
+                    <span id="ctx-image-result" class="text-sm text-stone-700 font-medium"></span>
+                    <img id="ctx-image-preview" class="w-full h-auto mt-3 rounded-lg shadow-sm border border-emerald-100 hidden">
+                </div>
+            </div>
+            
+            <p class="text-xs text-stone-500 mt-6 leading-relaxed bg-white/40 p-3 rounded-lg border border-white/30">
+                Location data is used strictly to provide accurate weather and mandi price context to the AI.
+            </p>
+        </div>
+    </div>
+
+  </main>
+  
+  <script src="js/app.js"></script>
+  <script src="js/chatbot.js"></script>
+</body>
+</html>
