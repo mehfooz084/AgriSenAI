@@ -74,11 +74,14 @@ The platform combines a modern, responsive web interface (built with Tailwind CS
    GEMINI_API_KEY=your_gemini_api_key_here
    ```
 
-4. **Run the Application:**
-   Start the Flask development server:
-   ```bash
-   python server.py
-   ```
+## 📊 Dataset
 
-5. **Access the Web App:**
-   Open your browser and navigate to `http://127.0.0.1:5000`
+The plant disease detection model was trained using the PlantVillage dataset.
+
+Due to the large size of the dataset, it is not included directly in this repository.
+
+### Dataset Source
+
+The dataset used for the project is available on Kaggle:
+
+🔗 [Plant Disease Detection Dataset – Kaggle](https://www.kaggle.com/code/abdulrahmankhaled1/plant-disease-detection/input)
