@@ -8,7 +8,11 @@ import tensorflow as tf
 # MODEL PATH
 # =====================================================
 
-MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "best_mobilenetv2.h5")
+MODEL_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "model",
+    "best_mobilenetv2.h5"
+)
 
 # =====================================================
 # CLASS NAMES (EXACT TRAINING ORDER)
@@ -90,8 +94,6 @@ def preprocess_image(image_file):
     # Load image exactly like notebook
     img = image.load_img(image_file, target_size=(224, 224))
 
-    # Save debug image (optional)
-    img.save("debug_streamlit.jpg")
 
     print("\n" + "="*60)
     print("Original Image Size :", img.size)
