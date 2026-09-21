@@ -595,7 +595,6 @@ def api_predict():
 # =========================================================
 # WEATHER
 # =========================================================
-
 @app.get("/api/weather")
 def api_weather():
 
@@ -605,11 +604,9 @@ def api_weather():
     ).strip()
 
     if not city:
-
         return friendly_error(
             "Please enter a city name."
         )
-
 
     try:
 
@@ -625,47 +622,39 @@ def api_weather():
 
     except Exception as exc:
 
-        print(
-            f"Weather error: {exc}"
-        )
+        print("=" * 60)
+        print("WEATHER EXCEPTION")
+        print("=" * 60)
+        print("City:", city)
+        print("Error:", repr(exc))
+        print("=" * 60)
 
         return friendly_error(
-
-            "Weather data could not be retrieved. "
-            "Please try again.",
-
+            "Weather data could not be retrieved. Please try again.",
             502
         )
 
-
-    # =====================================================
-    # WEATHER ERROR
-    # =====================================================
-
+    # PRINT THE REAL ERROR FROM weather.py
     if err:
 
-        if "not found" in err.lower():
+        print("=" * 60)
+        print("WEATHER FUNCTION ERROR")
+        print("=" * 60)
+        print("City:", city)
+        print("Error:", repr(err))
+        print("=" * 60)
+
+        if "not found" in str(err).lower():
 
             return friendly_error(
-
-                "City not found. "
-                "Please check the spelling and try again.",
-
+                "City not found. Please check the spelling and try again.",
                 404
             )
 
         return friendly_error(
-
-            "Weather data could not be retrieved. "
-            "Please try again.",
-
+            "Weather data could not be retrieved. Please try again.",
             502
         )
-
-
-    # =====================================================
-    # FORECAST
-    # =====================================================
 
     forecast = []
 
@@ -674,35 +663,19 @@ def api_weather():
         and not df_daily.empty
     ):
 
-        records = (
-            df_daily
-            .to_dict(
-                orient="records"
-            )
+        records = df_daily.to_dict(
+            orient="records"
         )
 
-        forecast = _json_safe(
-            records
-        )
-
-
-    # =====================================================
-    # RESPONSE
-    # =====================================================
+        forecast = _json_safe(records)
 
     return jsonify({
 
-        "location": _json_safe(
-            loc
-        ),
+        "location": _json_safe(loc),
 
-        "current": _json_safe(
-            cur
-        ),
+        "current": _json_safe(cur),
 
-        "recommendation": _json_safe(
-            rec
-        ),
+        "recommendation": _json_safe(rec),
 
         "forecast": forecast
 
