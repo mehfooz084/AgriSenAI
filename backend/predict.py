@@ -1,8 +1,8 @@
 import os
 import numpy as np
-from PIL import Image
 import tensorflow as tf
-from tensorflow.keras.utils import load_img, img_to_array
+import keras
+from keras.utils import load_img, img_to_array
 
 
 # =====================================================
@@ -72,7 +72,11 @@ def load_model():
             f"Model not found : {MODEL_PATH}"
         )
 
-    model = tf.keras.models.load_model(MODEL_PATH)
+    print("=" * 60)
+    print("LOADING MODEL...")
+    print("=" * 60)
+
+    model = keras.models.load_model(MODEL_PATH)
 
     print("=" * 60)
     print("MODEL LOADED SUCCESSFULLY")
@@ -94,7 +98,7 @@ def preprocess_image(image_file):
     # Reset file pointer
     image_file.seek(0)
 
-    # Load image exactly like notebook
+    # Load image
     img = load_img(
         image_file,
         target_size=(224, 224)
@@ -103,7 +107,7 @@ def preprocess_image(image_file):
     print("\n" + "=" * 60)
     print("Original Image Size :", img.size)
 
-    # Convert to array
+    # Convert image to NumPy array
     img_array = img_to_array(img)
 
     print("Image Shape :", img_array.shape)
@@ -112,8 +116,11 @@ def preprocess_image(image_file):
     print("Pixel Max   :", img_array.max())
     print("Pixel Mean  :", img_array.mean())
 
-    # Expand dimensions
-    img_array = np.expand_dims(img_array, axis=0)
+    # Add batch dimension
+    img_array = np.expand_dims(
+        img_array,
+        axis=0
+    )
 
     print("Final Shape :", img_array.shape)
     print("=" * 60)
@@ -134,11 +141,20 @@ def predict_disease(image_file, model):
         verbose=0
     )[0]
 
-    class_idx = int(np.argmax(predictions))
+    # Get highest probability class
+    class_idx = int(
+        np.argmax(predictions)
+    )
 
-    confidence = float(predictions[class_idx]) * 100
+    confidence = (
+        float(predictions[class_idx]) * 100
+    )
 
     predicted_class = CLASS_NAMES[class_idx]
+
+    # =================================================
+    # PRINT RESULTS
+    # =================================================
 
     print("\n" + "=" * 60)
     print("PREDICTION RESULTS")
@@ -147,15 +163,24 @@ def predict_disease(image_file, model):
     print("Predicted Index :", class_idx)
     print("Predicted Class :", predicted_class)
     print(
-        "Confidence      : {:.2f}%".format(confidence)
+        "Confidence      : {:.2f}%".format(
+            confidence
+        )
     )
+
+    # =================================================
+    # TOP 5 PREDICTIONS
+    # =================================================
 
     print("\nTop 5 Predictions")
     print("-" * 60)
 
-    top5 = np.argsort(predictions)[-5:][::-1]
+    top5 = np.argsort(
+        predictions
+    )[-5:][::-1]
 
     for idx in top5:
+
         print(
             f"{CLASS_NAMES[idx]:45s} "
             f"{predictions[idx] * 100:.2f}%"
