@@ -20,8 +20,8 @@ try:
 except Exception as exc:
     predict = None
     print(f"Predict module unavailable: {exc}")
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
 DISEASE_DB_PATH = os.path.join(BASE_DIR, "disease_database.json")
 
