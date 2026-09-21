@@ -11,12 +11,12 @@ from flask_cors import CORS
 from PIL import Image, UnidentifiedImageError
 from werkzeug.utils import secure_filename
 
-from backend import mandi
-from backend import weather
-from backend import chatbot_service
+import mandi
+import weather
+import chatbot_service
 
 try:
-    from backend import predict
+    import predict
 except Exception as exc:
     predict = None
     print(f"Predict module unavailable: {exc}")
