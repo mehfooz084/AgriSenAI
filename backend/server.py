@@ -11,20 +11,19 @@ from flask_cors import CORS
 from PIL import Image, UnidentifiedImageError
 from werkzeug.utils import secure_filename
 
-from backend import mandi
-from backend import weather
-from backend import chatbot_service
+import backend mandi
+import backend weather
+import  backend chatbot_service
 
 try:
-    from backend import predict
+    import predict
 except Exception as exc:
     predict = None
     print(f"Predict module unavailable: {exc}")
 
-    
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FRONTEND_DIR = os.path.join(BASE_DIR, "frontend")
-DISEASE_DB_PATH = os.path.join(BASE_DIR, "disease_database.json")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FRONTEND_DIR = os.path.join(os.path.dirname(BASE_DIR), "frontend")
+DISEASE_DB_PATH = os.path.join(os.path.dirname(BASE_DIR), "disease_database.json")
 
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 ALLOWED_FORMATS = {"JPEG", "PNG", "WEBP", "MPO"}
