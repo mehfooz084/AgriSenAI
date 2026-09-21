@@ -1,8 +1,9 @@
 import os
-os.environ["TF_USE_LEGACY_KERAS"] = "1"
 import numpy as np
 from PIL import Image
 import tensorflow as tf
+from tensorflow.keras.utils import load_img, img_to_array
+
 
 # =====================================================
 # MODEL PATH
@@ -13,6 +14,7 @@ MODEL_PATH = os.path.join(
     "model",
     "best_mobilenetv2.h5"
 )
+
 
 # =====================================================
 # CLASS NAMES (EXACT TRAINING ORDER)
@@ -58,6 +60,7 @@ CLASS_NAMES = [
     "Tomato - Yellow Leaf Curl Virus"
 ]
 
+
 # =====================================================
 # LOAD MODEL
 # =====================================================
@@ -65,7 +68,9 @@ CLASS_NAMES = [
 def load_model():
 
     if not os.path.exists(MODEL_PATH):
-        raise FileNotFoundError(f"Model not found : {MODEL_PATH}")
+        raise FileNotFoundError(
+            f"Model not found : {MODEL_PATH}"
+        )
 
     model = tf.keras.models.load_model(MODEL_PATH)
 
@@ -79,12 +84,10 @@ def load_model():
 
     return model
 
+
 # =====================================================
 # IMAGE PREPROCESSING
 # =====================================================
-
-import numpy as np
-from tensorflow.keras.preprocessing import image
 
 def preprocess_image(image_file):
 
@@ -92,14 +95,16 @@ def preprocess_image(image_file):
     image_file.seek(0)
 
     # Load image exactly like notebook
-    img = image.load_img(image_file, target_size=(224, 224))
+    img = load_img(
+        image_file,
+        target_size=(224, 224)
+    )
 
-
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Original Image Size :", img.size)
 
     # Convert to array
-    img_array = image.img_to_array(img)
+    img_array = img_to_array(img)
 
     print("Image Shape :", img_array.shape)
     print("Image dtype :", img_array.dtype)
@@ -111,9 +116,11 @@ def preprocess_image(image_file):
     img_array = np.expand_dims(img_array, axis=0)
 
     print("Final Shape :", img_array.shape)
-    print("="*60)
+    print("=" * 60)
 
     return img_array
+
+
 # =====================================================
 # PREDICTION
 # =====================================================
@@ -122,7 +129,10 @@ def predict_disease(image_file, model):
 
     img = preprocess_image(image_file)
 
-    predictions = model.predict(img, verbose=0)[0]
+    predictions = model.predict(
+        img,
+        verbose=0
+    )[0]
 
     class_idx = int(np.argmax(predictions))
 
@@ -136,7 +146,9 @@ def predict_disease(image_file, model):
 
     print("Predicted Index :", class_idx)
     print("Predicted Class :", predicted_class)
-    print("Confidence      : {:.2f}%".format(confidence))
+    print(
+        "Confidence      : {:.2f}%".format(confidence)
+    )
 
     print("\nTop 5 Predictions")
     print("-" * 60)
@@ -144,7 +156,10 @@ def predict_disease(image_file, model):
     top5 = np.argsort(predictions)[-5:][::-1]
 
     for idx in top5:
-        print(f"{CLASS_NAMES[idx]:45s} {predictions[idx]*100:.2f}%")
+        print(
+            f"{CLASS_NAMES[idx]:45s} "
+            f"{predictions[idx] * 100:.2f}%"
+        )
 
     print("=" * 60)
 
