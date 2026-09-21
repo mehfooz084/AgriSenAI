@@ -10,3 +10,4 @@ requests-cache
 retry-requests
 python-dotenv
 google-genai
+gunicorn
