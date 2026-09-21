@@ -2,7 +2,7 @@ import os
 import requests
 import json
 
-import weather
+from backend import weather
 
 def detect_intent_and_context(message, location_data):
     msg_lower = message.lower()
