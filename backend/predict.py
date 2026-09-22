@@ -1,8 +1,7 @@
 import os
 
-
+# Must be set before TensorFlow is imported
 os.environ["TF_USE_LEGACY_KERAS"] = "1"
-
 
 import numpy as np
 import tensorflow as tf
@@ -34,33 +33,25 @@ CLASS_NAMES = [
     "Apple - Black Rot",
     "Apple - Cedar Apple Rust",
     "Apple - Healthy",
-
     "Bell Pepper - Bacterial Spot",
     "Bell Pepper - Healthy",
-
     "Cherry - Healthy",
     "Cherry - Powdery Mildew",
-
     "Corn (Maize) - Cercospora Leaf Spot",
     "Corn (Maize) - Common Rust",
     "Corn (Maize) - Healthy",
     "Corn (Maize) - Northern Leaf Blight",
-
     "Grape - Black Rot",
     "Grape - Esca (Black Measles)",
     "Grape - Healthy",
     "Grape - Leaf Blight",
-
     "Peach - Bacterial Spot",
     "Peach - Healthy",
-
     "Potato - Early Blight",
     "Potato - Healthy",
     "Potato - Late Blight",
-
     "Strawberry - Healthy",
     "Strawberry - Leaf Scorch",
-
     "Tomato - Bacterial Spot",
     "Tomato - Early Blight",
     "Tomato - Healthy",
@@ -85,7 +76,7 @@ def load_model():
     print("LOADING MODEL...")
     print("=" * 60)
 
-    print("Model path:", MODEL_PATH)
+    print("Model:", MODEL_PATH)
     print(
         "TF_USE_LEGACY_KERAS:",
         os.environ.get("TF_USE_LEGACY_KERAS")
@@ -93,19 +84,48 @@ def load_model():
 
     try:
 
+        # ----------------------------------------------------
+        # Explicitly import the legacy TFOpLambda layer
+        # ----------------------------------------------------
+
+        try:
+            from tf_keras.src.layers.core.tf_op_layer import TFOpLambda
+        except Exception:
+            from tensorflow.python.keras.layers.core import TFOpLambda
+
+        print(
+            "TFOpLambda loaded:",
+            TFOpLambda,
+            flush=True
+        )
+
+        # ----------------------------------------------------
+        # Explicit custom object mapping
+        # ----------------------------------------------------
+
+        custom_objects = {
+            "TFOpLambda": TFOpLambda
+        }
+
+        print(
+            "Custom objects:",
+            list(custom_objects.keys()),
+            flush=True
+        )
+
+        # ----------------------------------------------------
+        # Load old H5 model
+        # ----------------------------------------------------
+
         model = keras.models.load_model(
             MODEL_PATH,
+            custom_objects=custom_objects,
             compile=False
         )
 
         print("=" * 60)
         print("MODEL LOADED SUCCESSFULLY")
         print("=" * 60)
-
-        print(
-            "Path:",
-            os.path.abspath(MODEL_PATH)
-        )
 
         print(
             "Input Shape:",
@@ -126,13 +146,15 @@ def load_model():
         print("=" * 60)
 
         print(
-            "Error Type:",
-            type(e).__name__
+            "ERROR TYPE:",
+            type(e).__name__,
+            flush=True
         )
 
         print(
-            "Error:",
-            str(e)
+            "ERROR:",
+            str(e),
+            flush=True
         )
 
         print("=" * 60)
@@ -153,7 +175,9 @@ def preprocess_image(image_file):
         target_size=(224, 224)
     )
 
-    print("\n" + "=" * 60)
+    print("=" * 60)
+    print("IMAGE PREPROCESSING")
+    print("=" * 60)
 
     print(
         "Original Image Size:",
@@ -187,7 +211,6 @@ def preprocess_image(image_file):
         img_array.mean()
     )
 
-    # Add batch dimension
     img_array = np.expand_dims(
         img_array,
         axis=0
@@ -209,81 +232,89 @@ def preprocess_image(image_file):
 
 def predict_disease(image_file, model):
 
-    img = preprocess_image(
-        image_file
-    )
+    try:
 
-    # --------------------------------------------------------
-    # MODEL PREDICTION
-    # --------------------------------------------------------
-
-    predictions = model.predict(
-        img,
-        verbose=0
-    )[0]
-
-    # --------------------------------------------------------
-    # GET HIGHEST PROBABILITY CLASS
-    # --------------------------------------------------------
-
-    class_idx = int(
-        np.argmax(predictions)
-    )
-
-    confidence = (
-        float(predictions[class_idx])
-        * 100
-    )
-
-    predicted_class = CLASS_NAMES[
-        class_idx
-    ]
-
-    # --------------------------------------------------------
-    # PRINT RESULTS
-    # --------------------------------------------------------
-
-    print("\n" + "=" * 60)
-    print("PREDICTION RESULTS")
-    print("=" * 60)
-
-    print(
-        "Predicted Index:",
-        class_idx
-    )
-
-    print(
-        "Predicted Class:",
-        predicted_class
-    )
-
-    print(
-        "Confidence: {:.2f}%".format(
-            confidence
+        img = preprocess_image(
+            image_file
         )
-    )
 
-    # --------------------------------------------------------
-    # TOP 5 PREDICTIONS
-    # --------------------------------------------------------
+        predictions = model.predict(
+            img,
+            verbose=0
+        )[0]
 
-    print("\nTop 5 Predictions")
-    print("-" * 60)
+        class_idx = int(
+            np.argmax(predictions)
+        )
 
-    top5 = np.argsort(
-        predictions
-    )[-5:][::-1]
+        confidence = (
+            float(predictions[class_idx])
+            * 100
+        )
 
-    for idx in top5:
+        predicted_class = CLASS_NAMES[
+            class_idx
+        ]
+
+        print("=" * 60)
+        print("PREDICTION RESULTS")
+        print("=" * 60)
 
         print(
-            f"{CLASS_NAMES[idx]:45s} "
-            f"{predictions[idx] * 100:.2f}%"
+            "Predicted Index:",
+            class_idx
         )
 
-    print("=" * 60)
+        print(
+            "Predicted Class:",
+            predicted_class
+        )
 
-    return (
-        predicted_class,
-        confidence
-    )
+        print(
+            "Confidence: {:.2f}%".format(
+                confidence
+            )
+        )
+
+        print("\nTop 5 Predictions")
+        print("-" * 60)
+
+        top5 = np.argsort(
+            predictions
+        )[-5:][::-1]
+
+        for idx in top5:
+
+            print(
+                f"{CLASS_NAMES[idx]:45s} "
+                f"{predictions[idx] * 100:.2f}%"
+            )
+
+        print("=" * 60)
+
+        return (
+            predicted_class,
+            confidence
+        )
+
+    except Exception as e:
+
+        print("=" * 60)
+        print("PREDICTION ERROR")
+        print("=" * 60)
+
+        print(
+            "ERROR TYPE:",
+            type(e).__name__,
+            flush=True
+        )
+
+        print(
+            "ERROR:",
+            str(e),
+            flush=True
+        )
+
+        print("=" * 60)
+
+        raise
