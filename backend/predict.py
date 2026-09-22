@@ -1,12 +1,6 @@
 import os
 
-# ============================================================
-# IMPORTANT: USE LEGACY KERAS 2
-# ============================================================
-# Your existing .h5 model was created with an older Keras version
-# and contains the legacy TFOpLambda layer.
-#
-# This MUST be set BEFORE importing TensorFlow / Keras.
+
 os.environ["TF_USE_LEGACY_KERAS"] = "1"
 
 
