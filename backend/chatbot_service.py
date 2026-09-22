@@ -538,14 +538,7 @@ def get_chatbot_response(
                 language
             )
 
-        # -----------------------------------------------------
-        # OTHER ERROR
-        # -----------------------------------------------------
-
-        # IMPORTANT:
-        # During debugging, return the actual error so we can
-        # identify the Vercel/Gemini problem.
-
+       
         return (
             f"Gemini Error: {error_msg}",
             language
