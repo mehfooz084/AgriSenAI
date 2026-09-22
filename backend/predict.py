@@ -1,24 +1,39 @@
 import os
+
+# ============================================================
+# IMPORTANT: USE LEGACY KERAS 2
+# ============================================================
+# Your existing .h5 model was created with an older Keras version
+# and contains the legacy TFOpLambda layer.
+#
+# This MUST be set BEFORE importing TensorFlow / Keras.
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
+
 import numpy as np
 import tensorflow as tf
-import keras
-from keras.utils import load_img, img_to_array
+import tf_keras as keras
+from tf_keras.utils import load_img, img_to_array
 
 
-# =====================================================
+# ============================================================
 # MODEL PATH
-# =====================================================
+# ============================================================
 
 MODEL_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    os.path.dirname(
+        os.path.dirname(
+            os.path.abspath(__file__)
+        )
+    ),
     "model",
     "best_mobilenetv2.h5"
 )
 
 
-# =====================================================
-# CLASS NAMES (EXACT TRAINING ORDER)
-# =====================================================
+# ============================================================
+# CLASS NAMES
+# ============================================================
 
 CLASS_NAMES = [
     "Apple - Apple Scab",
@@ -61,60 +76,122 @@ CLASS_NAMES = [
 ]
 
 
-# =====================================================
+# ============================================================
 # LOAD MODEL
-# =====================================================
+# ============================================================
 
 def load_model():
 
     if not os.path.exists(MODEL_PATH):
         raise FileNotFoundError(
-            f"Model not found : {MODEL_PATH}"
+            f"Model not found: {MODEL_PATH}"
         )
 
     print("=" * 60)
     print("LOADING MODEL...")
     print("=" * 60)
 
-    model = keras.models.load_model(MODEL_PATH)
+    print("Model path:", MODEL_PATH)
+    print(
+        "TF_USE_LEGACY_KERAS:",
+        os.environ.get("TF_USE_LEGACY_KERAS")
+    )
 
-    print("=" * 60)
-    print("MODEL LOADED SUCCESSFULLY")
-    print("=" * 60)
+    try:
 
-    print("Path :", os.path.abspath(MODEL_PATH))
-    print("Input Shape :", model.input_shape)
-    print("Output Shape:", model.output_shape)
+        model = keras.models.load_model(
+            MODEL_PATH,
+            compile=False
+        )
 
-    return model
+        print("=" * 60)
+        print("MODEL LOADED SUCCESSFULLY")
+        print("=" * 60)
+
+        print(
+            "Path:",
+            os.path.abspath(MODEL_PATH)
+        )
+
+        print(
+            "Input Shape:",
+            model.input_shape
+        )
+
+        print(
+            "Output Shape:",
+            model.output_shape
+        )
+
+        return model
+
+    except Exception as e:
+
+        print("=" * 60)
+        print("MODEL LOAD ERROR")
+        print("=" * 60)
+
+        print(
+            "Error Type:",
+            type(e).__name__
+        )
+
+        print(
+            "Error:",
+            str(e)
+        )
+
+        print("=" * 60)
+
+        raise
 
 
-# =====================================================
+# ============================================================
 # IMAGE PREPROCESSING
-# =====================================================
+# ============================================================
 
 def preprocess_image(image_file):
 
-    # Reset file pointer
     image_file.seek(0)
 
-    # Load image
     img = load_img(
         image_file,
         target_size=(224, 224)
     )
 
     print("\n" + "=" * 60)
-    print("Original Image Size :", img.size)
 
-    # Convert image to NumPy array
+    print(
+        "Original Image Size:",
+        img.size
+    )
+
     img_array = img_to_array(img)
 
-    print("Image Shape :", img_array.shape)
-    print("Image dtype :", img_array.dtype)
-    print("Pixel Min   :", img_array.min())
-    print("Pixel Max   :", img_array.max())
-    print("Pixel Mean  :", img_array.mean())
+    print(
+        "Image Shape:",
+        img_array.shape
+    )
+
+    print(
+        "Image dtype:",
+        img_array.dtype
+    )
+
+    print(
+        "Pixel Min:",
+        img_array.min()
+    )
+
+    print(
+        "Pixel Max:",
+        img_array.max()
+    )
+
+    print(
+        "Pixel Mean:",
+        img_array.mean()
+    )
 
     # Add batch dimension
     img_array = np.expand_dims(
@@ -122,55 +199,79 @@ def preprocess_image(image_file):
         axis=0
     )
 
-    print("Final Shape :", img_array.shape)
+    print(
+        "Final Shape:",
+        img_array.shape
+    )
+
     print("=" * 60)
 
     return img_array
 
 
-# =====================================================
-# PREDICTION
-# =====================================================
+# ============================================================
+# PREDICT DISEASE
+# ============================================================
 
 def predict_disease(image_file, model):
 
-    img = preprocess_image(image_file)
+    img = preprocess_image(
+        image_file
+    )
+
+    # --------------------------------------------------------
+    # MODEL PREDICTION
+    # --------------------------------------------------------
 
     predictions = model.predict(
         img,
         verbose=0
     )[0]
 
-    # Get highest probability class
+    # --------------------------------------------------------
+    # GET HIGHEST PROBABILITY CLASS
+    # --------------------------------------------------------
+
     class_idx = int(
         np.argmax(predictions)
     )
 
     confidence = (
-        float(predictions[class_idx]) * 100
+        float(predictions[class_idx])
+        * 100
     )
 
-    predicted_class = CLASS_NAMES[class_idx]
+    predicted_class = CLASS_NAMES[
+        class_idx
+    ]
 
-    # =================================================
+    # --------------------------------------------------------
     # PRINT RESULTS
-    # =================================================
+    # --------------------------------------------------------
 
     print("\n" + "=" * 60)
     print("PREDICTION RESULTS")
     print("=" * 60)
 
-    print("Predicted Index :", class_idx)
-    print("Predicted Class :", predicted_class)
     print(
-        "Confidence      : {:.2f}%".format(
+        "Predicted Index:",
+        class_idx
+    )
+
+    print(
+        "Predicted Class:",
+        predicted_class
+    )
+
+    print(
+        "Confidence: {:.2f}%".format(
             confidence
         )
     )
 
-    # =================================================
+    # --------------------------------------------------------
     # TOP 5 PREDICTIONS
-    # =================================================
+    # --------------------------------------------------------
 
     print("\nTop 5 Predictions")
     print("-" * 60)
@@ -188,4 +289,7 @@ def predict_disease(image_file, model):
 
     print("=" * 60)
 
-    return predicted_class, confidence
+    return (
+        predicted_class,
+        confidence
+    )
