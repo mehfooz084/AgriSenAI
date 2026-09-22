@@ -1,5 +1,6 @@
 import json
 import os
+import math
 from io import BytesIO
 
 from dotenv import load_dotenv
@@ -93,30 +94,59 @@ disease_db = {}
 # =========================================================
 # JSON SAFE CONVERTER
 # =========================================================
-
 def _json_safe(value):
 
+    # ---------------------------------------------------------
+    # DICTIONARY
+    # ---------------------------------------------------------
     if isinstance(value, dict):
         return {
             k: _json_safe(v)
             for k, v in value.items()
         }
 
+    # ---------------------------------------------------------
+    # LIST / TUPLE
+    # ---------------------------------------------------------
     if isinstance(value, (list, tuple)):
         return [
             _json_safe(v)
             for v in value
         ]
 
+    # ---------------------------------------------------------
+    # NUMPY VALUES
+    # ---------------------------------------------------------
     if isinstance(value, np.generic):
-        return value.item()
 
+        value = value.item()
+
+    # ---------------------------------------------------------
+    # FLOAT NaN / INFINITY
+    # ---------------------------------------------------------
+    if isinstance(value, float):
+
+        if not math.isfinite(value):
+            return None
+
+        return value
+
+    # ---------------------------------------------------------
+    # OTHER NUMPY / OBJECT VALUES
+    # ---------------------------------------------------------
     if hasattr(value, "item") and not isinstance(
         value,
         (bytes, str)
     ):
         try:
-            return value.item()
+            item = value.item()
+
+            if isinstance(item, float):
+                if not math.isfinite(item):
+                    return None
+
+            return item
+
         except Exception:
             return value
 
@@ -162,9 +192,6 @@ def load_resources():
         )
 
 
-# Load only the JSON database at startup.
-#
-# DO NOT load TensorFlow/model here.
 load_resources()
 
 
@@ -177,8 +204,7 @@ def get_model():
     global model
     global model_error
 
-    # If model is already loaded,
-    # return it immediately.
+  
     if model is not None:
         return model
 
@@ -188,8 +214,7 @@ def get_model():
         print("LOADING ML MODEL...")
         print("=" * 60)
 
-        # IMPORTANT:
-        # TensorFlow/predict is imported ONLY here.
+      
         from backend import predict
 
         model = predict.load_model()
@@ -663,9 +688,12 @@ def api_weather():
         and not df_daily.empty
     ):
 
-        records = df_daily.to_dict(
-            orient="records"
-        )
+        records = (
+            df_daily
+            .replace([np.inf, -np.inf], np.nan)
+            .where(df_daily.notna(), None)
+            .to_dict(orient="records")
+            )
 
         forecast = _json_safe(records)
 
