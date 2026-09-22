@@ -4,81 +4,176 @@ import pandas as pd
 from retry_requests import retry
 
 
-def fetch_weather_and_recommendations(city):
-    """
-    Fetch live weather data from Open-Meteo
-    and generate farming recommendations.
+# ============================================================
+# GEOCODING
+# ============================================================
 
-    Vercel-compatible version:
-    No local SQLite/cache is used.
+def get_coordinates(city):
+    """
+    Get latitude/longitude for a city.
+
+    Primary:
+        Open-Meteo Geocoding
+
+    Fallback:
+        Nominatim / OpenStreetMap
     """
 
-    # =========================================================
-    # 1. GEOCODING
-    # =========================================================
+    # --------------------------------------------------------
+    # PRIMARY: OPEN-METEO
+    # --------------------------------------------------------
 
     try:
-        geo_response = requests.get(
+
+        print("=" * 60)
+        print("GEOCODING WITH OPEN-METEO")
+        print("City:", city)
+        print("=" * 60)
+
+        response = requests.get(
             "https://geocoding-api.open-meteo.com/v1/search",
             params={
                 "name": city,
-                "count": 1
+                "count": 1,
+                "language": "en",
+                "format": "json"
             },
-            timeout=20
+            timeout=12
         )
 
-        geo_response.raise_for_status()
-        geo = geo_response.json()
+        response.raise_for_status()
+
+        geo = response.json()
+
+        if geo.get("results"):
+
+            result = geo["results"][0]
+
+            print("Open-Meteo geocoding successful.")
+
+            return {
+                "city": result.get("name", city.title()),
+                "state": result.get("admin1", "N/A"),
+                "country": result.get("country", "N/A"),
+                "lat": result["latitude"],
+                "lon": result["longitude"]
+            }
+
+        print("Open-Meteo returned no results.")
 
     except Exception as e:
 
         print("=" * 60)
-        print("GEOCODING ERROR")
+        print("OPEN-METEO GEOCODING FAILED")
+        print("Error type:", type(e).__name__)
+        print("Error:", str(e))
+        print("Trying Nominatim fallback...")
+        print("=" * 60)
+
+    # --------------------------------------------------------
+    # FALLBACK: NOMINATIM
+    # --------------------------------------------------------
+
+    try:
+
+        print("=" * 60)
+        print("GEOCODING WITH NOMINATIM")
         print("City:", city)
+        print("=" * 60)
+
+        response = requests.get(
+            "https://nominatim.openstreetmap.org/search",
+            params={
+                "q": city,
+                "format": "json",
+                "limit": 1
+            },
+            headers={
+                "User-Agent": "AgriSenseAI/1.0"
+            },
+            timeout=12
+        )
+
+        response.raise_for_status()
+
+        results = response.json()
+
+        if results:
+
+            result = results[0]
+
+            lat = float(result["lat"])
+            lon = float(result["lon"])
+
+            address = result.get("address", {})
+
+            print("Nominatim geocoding successful.")
+            print("Latitude:", lat)
+            print("Longitude:", lon)
+
+            return {
+                "city": (
+                    address.get("city")
+                    or address.get("town")
+                    or address.get("village")
+                    or city.title()
+                ),
+                "state": address.get(
+                    "state",
+                    "N/A"
+                ),
+                "country": address.get(
+                    "country",
+                    "N/A"
+                ),
+                "lat": lat,
+                "lon": lon
+            }
+
+        print("Nominatim returned no results.")
+
+    except Exception as e:
+
+        print("=" * 60)
+        print("NOMINATIM GEOCODING FAILED")
+        print("Error type:", type(e).__name__)
         print("Error:", str(e))
         print("=" * 60)
 
+    return None
+
+
+# ============================================================
+# WEATHER FUNCTION
+# ============================================================
+
+def fetch_weather_and_recommendations(city):
+    """
+    Fetch live weather data and generate
+    farming recommendations.
+    """
+
+    # ========================================================
+    # 1. GET COORDINATES
+    # ========================================================
+
+    location_details = get_coordinates(city)
+
+    if not location_details:
+
         return (
             None,
             None,
             None,
             None,
-            f"Geocoding Error: {str(e)}"
+            f"Could not find weather location for {city}."
         )
 
-    # =========================================================
-    # 2. CITY NOT FOUND
-    # =========================================================
-
-    if "results" not in geo or not geo["results"]:
-
-        return (
-            None,
-            None,
-            None,
-            None,
-            "City not found!"
-        )
-
-    # =========================================================
-    # 3. LOCATION DETAILS
-    # =========================================================
-
-    r = geo["results"][0]
-
-    lat = r["latitude"]
-    lon = r["longitude"]
-
-    location_details = {
-        "city": r.get("name", city.title()),
-        "state": r.get("admin1", "N/A"),
-        "country": r.get("country", "N/A"),
-        "lat": lat,
-        "lon": lon
-    }
+    lat = location_details["lat"]
+    lon = location_details["lon"]
 
     print("=" * 60)
-    print("WEATHER LOCATION")
+    print("LOCATION FOUND")
     print("City:", location_details["city"])
     print("State:", location_details["state"])
     print("Country:", location_details["country"])
@@ -86,35 +181,32 @@ def fetch_weather_and_recommendations(city):
     print("Longitude:", lon)
     print("=" * 60)
 
-    # =========================================================
-    # 4. OPEN-METEO CLIENT
-    # =========================================================
+    # ========================================================
+    # 2. OPEN-METEO WEATHER CLIENT
+    # ========================================================
 
     try:
-
-        # IMPORTANT:
-        # No requests_cache here.
-        # This avoids SQLite filesystem errors on Vercel.
 
         session = requests.Session()
 
         retry_session = retry(
             session,
             retries=3,
-            backoff_factor=0.2
+            backoff_factor=0.5
         )
 
         client = openmeteo_requests.Client(
             session=retry_session
         )
 
-        # =====================================================
-        # 5. WEATHER PARAMETERS
-        # =====================================================
+        # ====================================================
+        # WEATHER PARAMETERS
+        # ====================================================
 
         params = {
             "latitude": lat,
             "longitude": lon,
+
             "models": "ncep_gfs_seamless",
 
             "current": [
@@ -137,12 +229,17 @@ def fetch_weather_and_recommendations(city):
             ],
 
             "forecast_days": 16,
+
             "timezone": "auto"
         }
 
-        # =====================================================
-        # 6. API REQUEST
-        # =====================================================
+        # ====================================================
+        # CALL OPEN-METEO
+        # ====================================================
+
+        print("=" * 60)
+        print("REQUESTING WEATHER DATA...")
+        print("=" * 60)
 
         responses = client.weather_api(
             "https://api.open-meteo.com/v1/forecast",
@@ -151,41 +248,60 @@ def fetch_weather_and_recommendations(city):
 
         resp = responses[0]
 
+        print("Weather API request successful.")
+
     except Exception as e:
 
         print("=" * 60)
-        print("OPEN-METEO API ERROR")
+        print("OPEN-METEO WEATHER API ERROR")
         print("Error type:", type(e).__name__)
         print("Error:", str(e))
         print("=" * 60)
 
         return (
-            None,
+            location_details,
             None,
             None,
             None,
             f"Weather API Error: {str(e)}"
         )
 
-    # =========================================================
-    # 7. CURRENT WEATHER
-    # =========================================================
+    # ========================================================
+    # 3. CURRENT WEATHER
+    # ========================================================
 
     try:
 
-        cur = resp.Current()
+        current = resp.Current()
 
         current_weather = {
-            "temp": cur.Variables(0).Value(),
-            "hum": cur.Variables(1).Value(),
-            "wind": cur.Variables(2).Value()
+            "temp": current.Variables(0).Value(),
+            "hum": current.Variables(1).Value(),
+            "wind": current.Variables(2).Value()
         }
 
         print("=" * 60)
         print("CURRENT WEATHER")
-        print("Temperature:", current_weather["temp"])
-        print("Humidity:", current_weather["hum"])
-        print("Wind:", current_weather["wind"])
+        print("=" * 60)
+
+        print(
+            "Temperature:",
+            current_weather["temp"],
+            "°C"
+        )
+
+        print(
+            "Humidity:",
+            current_weather["hum"],
+            "%"
+        )
+
+        print(
+            "Wind:",
+            current_weather["wind"],
+            "km/h"
+        )
+
         print("=" * 60)
 
     except Exception as e:
@@ -196,24 +312,38 @@ def fetch_weather_and_recommendations(city):
         print("=" * 60)
 
         return (
-            None,
+            location_details,
             None,
             None,
             None,
             f"Weather Data Error: {str(e)}"
         )
 
-    # =========================================================
-    # 8. DAILY FORECAST
-    # =========================================================
+    # ========================================================
+    # 4. DAILY FORECAST
+    # ========================================================
 
     try:
 
         daily = resp.Daily()
 
-        max_temp = daily.Variables(0).ValuesAsNumpy()
-        min_temp = daily.Variables(1).ValuesAsNumpy()
-        rain_probability = daily.Variables(2).ValuesAsNumpy()
+        max_temp = (
+            daily
+            .Variables(0)
+            .ValuesAsNumpy()
+        )
+
+        min_temp = (
+            daily
+            .Variables(1)
+            .ValuesAsNumpy()
+        )
+
+        rain_probability = (
+            daily
+            .Variables(2)
+            .ValuesAsNumpy()
+        )
 
         daily_df = pd.DataFrame({
 
@@ -230,7 +360,8 @@ def fetch_weather_and_recommendations(city):
 
             "Min Temp (°C)": min_temp,
 
-            "Rain Probability (%)": rain_probability
+            "Rain Probability (%)":
+                rain_probability
         })
 
         daily_df["Date"] = (
@@ -241,7 +372,7 @@ def fetch_weather_and_recommendations(city):
     except Exception as e:
 
         print("=" * 60)
-        print("DAILY WEATHER PARSING ERROR")
+        print("DAILY FORECAST ERROR")
         print("Error:", str(e))
         print("=" * 60)
 
@@ -253,28 +384,37 @@ def fetch_weather_and_recommendations(city):
             f"Forecast Data Error: {str(e)}"
         )
 
-    # =========================================================
-    # 9. FARMING RECOMMENDATION
-    # =========================================================
+    # ========================================================
+    # 5. FARMING RECOMMENDATION
+    # ========================================================
 
     rain3 = max(
         rain_probability[:3]
     )
 
-    wind = current_weather["wind"]
     temp = current_weather["temp"]
     humidity = current_weather["hum"]
+    wind = current_weather["wind"]
+
+    # --------------------------------------------------------
+    # HIGH RAIN
+    # --------------------------------------------------------
 
     if rain3 >= 60:
 
         rec = "🌧 Delay Spraying"
 
         reason = (
-            f"Rain expected within next 3 days "
-            f"(Max {rain3:.0f}%)."
+            f"Rain expected within the next "
+            f"3 days (maximum probability "
+            f"{rain3:.0f}%)."
         )
 
         status = "error"
+
+    # --------------------------------------------------------
+    # HIGH WIND
+    # --------------------------------------------------------
 
     elif wind >= 20:
 
@@ -287,6 +427,10 @@ def fetch_weather_and_recommendations(city):
 
         status = "warning"
 
+    # --------------------------------------------------------
+    # HIGH TEMPERATURE
+    # --------------------------------------------------------
+
     elif temp >= 35:
 
         rec = "☀️ Spray in Evening"
@@ -297,6 +441,10 @@ def fetch_weather_and_recommendations(city):
         )
 
         status = "warning"
+
+    # --------------------------------------------------------
+    # HIGH HUMIDITY
+    # --------------------------------------------------------
 
     elif humidity >= 85:
 
@@ -309,13 +457,17 @@ def fetch_weather_and_recommendations(city):
 
         status = "warning"
 
+    # --------------------------------------------------------
+    # GOOD WEATHER
+    # --------------------------------------------------------
+
     else:
 
         rec = "✅ Safe to Spray"
 
         reason = (
             "Weather conditions are "
-            "suitable."
+            "suitable for spraying."
         )
 
         status = "success"
@@ -326,23 +478,49 @@ def fetch_weather_and_recommendations(city):
         "msg": reason
     }
 
-    # =========================================================
-    # 10. DEBUG OUTPUT
-    # =========================================================
+    # ========================================================
+    # 6. FINAL DEBUG
+    # ========================================================
 
     print("=" * 60)
     print("WEATHER FETCH SUCCESS")
-    print("City:", location_details["city"])
-    print("Temperature:", current_weather["temp"])
-    print("Humidity:", current_weather["hum"])
-    print("Wind:", current_weather["wind"])
-    print("3-Day Max Rain Probability:", rain3)
-    print("Recommendation:", rec)
     print("=" * 60)
 
-    # =========================================================
-    # 11. RETURN EVERYTHING
-    # =========================================================
+    print(
+        "City:",
+        location_details["city"]
+    )
+
+    print(
+        "Temperature:",
+        current_weather["temp"]
+    )
+
+    print(
+        "Humidity:",
+        current_weather["hum"]
+    )
+
+    print(
+        "Wind:",
+        current_weather["wind"]
+    )
+
+    print(
+        "3-Day Rain Probability:",
+        rain3
+    )
+
+    print(
+        "Recommendation:",
+        rec
+    )
+
+    print("=" * 60)
+
+    # ========================================================
+    # 7. RETURN
+    # ========================================================
 
     return (
         location_details,
