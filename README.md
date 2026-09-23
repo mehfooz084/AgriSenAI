@@ -34,7 +34,7 @@ The platform combines a modern, responsive web interface (built with Tailwind CS
 - **Auto-Language Detection:** The AI automatically detects if the user is typing in English, Hindi, Marathi, or Hinglish, and dynamically updates its response language to match the user.
 - **Hands-Free Mode:** Features built-in Speech-to-Text (microphone) for voice input and Text-to-Speech (speaker) so the AI can read its advice out loud to the farmer in the field.
 
-## LIVE DEMO - https://agri-sen-ai-gdhy-omega.vercel.app/
+## 🌐 [Live Demo](https://agri-sen-ai-gdhy-omega.vercel.app/)
 ---
 
 ## 🛠️ Technology Stack
